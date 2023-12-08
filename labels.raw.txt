@@ -1,0 +1,6 @@
+up
+down
+left
+rigt
+go
+stop

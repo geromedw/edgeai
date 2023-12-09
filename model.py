@@ -204,9 +204,9 @@ def input_tensor(interpreter):
 def set_input(interpreter, data):
     """Copies data to input tensor."""
     interpreter_shape = interpreter.get_input_details()[0]['shape']
-    data = adjust_data_size(data, target_shape_size)  # Implement this function
     data_size = np.prod(data.shape)
     target_shape_size = np.prod(interpreter_shape[1:])
+    data = adjust_data_size(data, target_shape_size)  # Implement this function
 
     print("Size of Data Array:", data_size, "Shape:", data.shape)
     print("Size of Target Shape:", target_shape_size, "Target Shape:", interpreter_shape[1:])

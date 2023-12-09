@@ -175,7 +175,7 @@ test_spectrogram_ds = test_spectrogram_ds.cache().prefetch(tf.data.AUTOTUNE)
 
 
 #gebruik van een cnn netwerk
-input_shape = example_spectrograms.shape[1:7]
+input_shape = example_spectrograms.shape[1:8]
 print('Input shape:', input_shape)
 print(len(label_names))
 num_labels = len(label_names)

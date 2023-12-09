@@ -196,6 +196,7 @@ def output_tensor(interpreter, i):
 
 def input_tensor(interpreter):
     """Returns the input tensor view as numpy array."""
+    print("ok")
     tensor_index = interpreter.get_input_details()[0]['index']
     print(tensor_index)
     return interpreter.tensor(tensor_index)()[0]

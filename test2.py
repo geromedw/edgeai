@@ -60,8 +60,6 @@ def get_spectrogram(waveform):
     spectrogram = tf.abs(spectrogram)
     # Resize the spectrogram to the new shape (198, 32).
     spectrogram = tf.image.resize(spectrogram, size=(198, 32))
-
-
     # Add a `channels` dimension, so that the spectrogram can be used
     # as image-like input data with convolution layers.
     spectrogram = spectrogram[..., tf.newaxis]
@@ -99,12 +97,8 @@ train_spectrogram_ds = train_spectrogram_ds.cache().shuffle(10000).prefetch(tf.d
 val_spectrogram_ds = val_spectrogram_ds.cache().prefetch(tf.data.AUTOTUNE)
 test_spectrogram_ds = test_spectrogram_ds.cache().prefetch(tf.data.AUTOTUNE)
 
-
-for spec, label in train_spectrogram_ds.take(1):
-    print("Spectrogram shape:", spec.shape)
-
 # gebruik van een CNN netwerk
-input_shape = (198, 32)  # Updated input shape
+input_shape = (198, 32, 1)  # Updated input shape
 print('Input shape:', input_shape)
 num_labels = len(label_names)
 
@@ -125,6 +119,7 @@ model = models.Sequential([
     layers.Dropout(0.5),
     layers.Dense(num_labels),
 ])
+
 model.summary()
 
 # configureren keras model

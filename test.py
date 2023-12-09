@@ -40,7 +40,7 @@ train_ds, val_ds = tf.keras.utils.audio_dataset_from_directory(
     batch_size=64,
     validation_split=0.2,
     seed=0,
-    output_sequence_length=16000,
+    output_sequence_length=6400,
     subset='both')
 
 label_names = np.array(train_ds.class_names)
@@ -244,7 +244,7 @@ plt.show()
 
 #voer juisheidstest uit
 
-x = data_dir/'no/01bb6a2a_nohash_0.wav'
+""" x = data_dir/'no/01bb6a2a_nohash_0.wav'
 x = tf.io.read_file(str(x))
 x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=16000,)
 x = tf.squeeze(x, axis=-1)
@@ -258,7 +258,7 @@ plt.bar(x_labels, tf.nn.softmax(prediction[0]))
 plt.title('No')
 plt.show()
 
-display.display(display.Audio(waveform, rate=16000))
+display.display(display.Audio(waveform, rate=16000)) """
 
 
 converter = tf.lite.TFLiteConverter.from_keras_model(model)

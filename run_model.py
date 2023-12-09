@@ -48,14 +48,11 @@ def main():
   parser = argparse.ArgumentParser()
   model.add_model_flags(parser)
   args = parser.parse_args()
-  print(args.model_file)
   interpreter = model.make_interpreter(args.model_file)
-  print(interpreter)
   interpreter.allocate_tensors()
-  print(interpreter.allocate_tensors())
   mic = args.mic if args.mic is None else int(args.mic)
   model.classify_audio(mic, interpreter,
-                       labels_file="ownlabels.raw.txt",
+                       labels_file="labels.raw.txt",
                        result_callback=print_results,
                        sample_rate_hz=int(args.sample_rate_hz),
                        num_frames_hop=int(args.num_frames_hop))

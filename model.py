@@ -209,13 +209,14 @@ def set_input(interpreter, data):
 
     print("Size of Data Array:", data_size, "Shape:", data.shape)
     print("Size of Target Shape:", target_shape_size, "Target Shape:", interpreter_shape[1:])
+    input_tensor(interpreter)[:,:] = np.reshape(data, interpreter_shape[1:3])
 
 
-    if data_size != target_shape_size:
+"""     if data_size != target_shape_size:
         print("Error: Size mismatch between data array and target shape.")
     else:
       reshaped_data = np.reshape(data, interpreter_shape[1:])
-      input_tensor(interpreter)[:,:] = reshaped_data
+    input_tensor(interpreter)[:,:] = reshaped_data """
 
 
 def make_interpreter(model_file):

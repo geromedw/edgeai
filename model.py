@@ -53,7 +53,7 @@ class Uint8LogMelFeatureExtractor(object):
   a specified number of spectral slices from an AudioRecorder.
   """
 
-  def __init__(self, input_shape=(124, 129, 1), num_frames_hop=62):
+  def __init__(self, input_shape=(124, 129), num_frames_hop=62):
     self.spectrogram_window_length_seconds = 0.025
     self.spectrogram_hop_length_seconds = 0.010
     
@@ -209,7 +209,7 @@ def set_input(interpreter, data):
     target_shape_size = np.prod(interpreter_shape[1:])
 
     interpreter_shape = interpreter.get_input_details()[0]['shape']
-    input_tensor(interpreter)[:, :, :] = np.reshape(data, interpreter_shape[1:])
+    input_tensor(interpreter)[:, :] = np.reshape(data, interpreter_shape[1:])
 
     print("Size of Data Array:", data_size, "Shape:", data.shape)
     print("Size of Target Shape:", target_shape_size, "Target Shape:", interpreter_shape[1:])

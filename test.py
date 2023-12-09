@@ -40,7 +40,7 @@ train_ds, val_ds = tf.keras.utils.audio_dataset_from_directory(
     batch_size=64,
     validation_split=0.2,
     seed=0,
-    output_sequence_length=1600,
+    output_sequence_length=16000,
     subset='both')
 
 label_names = np.array(train_ds.class_names)

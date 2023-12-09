@@ -21,12 +21,12 @@ DATASET_PATH = 'data/mini_speech_commands'
 #get audio file
 data_dir = pathlib.Path(DATASET_PATH)
 #na eerste keer niet meer opnieuw doen
-if not data_dir.exists():
+""" if not data_dir.exists():
   tf.keras.utils.get_file(
       'mini_speech_commands.zip',
       origin="http://storage.googleapis.com/download.tensorflow.org/data/mini_speech_commands.zip",
       extract=True,
-      cache_dir='.', cache_subdir='data')
+      cache_dir='.', cache_subdir='data') """
 
 #lees files uit met 8 woorden die worden gebruikt
 commands = np.array(tf.io.gfile.listdir(str(data_dir)))
@@ -118,12 +118,10 @@ def plot_spectrogram(spectrogram, ax):
     if len(spectrogram.shape) > 2:
         assert len(spectrogram.shape) == 3
         spectrogram = np.squeeze(spectrogram, axis=-1)
-    
-    # Convert the frequencies to log scale and transpose, so that the time is
-    # represented on the x-axis (columns).
-    # Add an epsilon to avoid taking a log of zero.
+        # Convert the frequencies to log scale and transpose, so that the time is
+        # represented on the x-axis (columns).
+        # Add an epsilon to avoid taking a log of zero.
     log_spec = np.log(spectrogram.T + np.finfo(float).eps)
-    
     height = log_spec.shape[0]
     width = log_spec.shape[1]
     X = np.linspace(0, np.size(spectrogram), num=width, dtype=int)
@@ -246,7 +244,7 @@ plt.show()
 
 #voer juisheidstest uit
 
-""" x = data_dir/'no/01bb6a2a_nohash_0.wav'
+x = data_dir/'no/01bb6a2a_nohash_0.wav'
 x = tf.io.read_file(str(x))
 x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=16000,)
 x = tf.squeeze(x, axis=-1)
@@ -260,7 +258,7 @@ plt.bar(x_labels, tf.nn.softmax(prediction[0]))
 plt.title('No')
 plt.show()
 
-display.display(display.Audio(waveform, rate=16000)) """
+display.display(display.Audio(waveform, rate=16000))
 
 
 converter = tf.lite.TFLiteConverter.from_keras_model(model)

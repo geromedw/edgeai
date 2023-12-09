@@ -204,6 +204,7 @@ def input_tensor(interpreter):
 def set_input(interpreter, data):
     """Copies data to input tensor."""
     interpreter_shape = interpreter.get_input_details()[0]['shape']
+    data = adjust_data_size(data, target_shape_size)  # Implement this function
     data_size = np.prod(data.shape)
     target_shape_size = np.prod(interpreter_shape[1:])
 
@@ -217,6 +218,17 @@ def set_input(interpreter, data):
       reshaped_data = np.reshape(data, interpreter_shape[1:])
       input_tensor(interpreter)[:, :,:] = reshaped_data
 
+def adjust_data_size(data, target_size):
+    current_size = np.prod(data.shape)
+    
+    if current_size == target_size:
+        return data
+    elif current_size > target_size:
+        # If the current size is larger, truncate or reshape the data
+        return data[:target_size].reshape(data.shape[:1] + (-1,))
+    else:
+        # If the current size is smaller, pad or reshape the data
+        return np.pad(data, (0, target_size - current_size), mode='constant')
 
 def make_interpreter(model_file):
     model_file, *device = model_file.split('@')

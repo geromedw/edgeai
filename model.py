@@ -197,12 +197,14 @@ def output_tensor(interpreter, i):
 def input_tensor(interpreter):
     """Returns the input tensor view as numpy array."""
     tensor_index = interpreter.get_input_details()[0]['index']
+    print(tensor_index)
     return interpreter.tensor(tensor_index)()[0]
 
 
 def set_input(interpreter, data):
     """Copies data to input tensor."""
     interpreter_shape = interpreter.get_input_details()[0]['shape']
+    print(interpreter_shape)
     input_tensor(interpreter)[:,:] = np.reshape(data, interpreter_shape[1:3])
 
 

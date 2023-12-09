@@ -218,6 +218,7 @@ def set_input(interpreter, data):
 
 
 def make_interpreter(model_file):
+    print("devices",device)
     model_file, *device = model_file.split('@')
     return tflite.Interpreter(
       model_path=model_file,

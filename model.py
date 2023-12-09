@@ -207,8 +207,9 @@ def set_input(interpreter, data):
     data_size = np.prod(data.shape)
     target_shape_size = np.prod(interpreter_shape[1:])
 
-    print("Size of Data Array:", data_size)
-    print("Size of Target Shape:", target_shape_size)
+    print("Size of Data Array:", data_size, "Shape:", data.shape)
+    print("Size of Target Shape:", target_shape_size, "Target Shape:", interpreter_shape[1:])
+
 
     if data_size != target_shape_size:
         print("Error: Size mismatch between data array and target shape.")

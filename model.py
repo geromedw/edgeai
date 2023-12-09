@@ -205,7 +205,7 @@ def set_input(interpreter, data):
     """Copies data to input tensor."""
     interpreter_shape = interpreter.get_input_details()[0]['shape']
     data_size = np.prod(data.shape)
-    target_shape_size = np.prod(interpreter_shape[1:3])
+    target_shape_size = np.prod(interpreter_shape[1:])
 
     print("Size of Data Array:", data_size)
     print("Size of Target Shape:", target_shape_size)
@@ -213,8 +213,8 @@ def set_input(interpreter, data):
     if data_size != target_shape_size:
         print("Error: Size mismatch between data array and target shape.")
     else:
-      reshaped_data = np.reshape(data, interpreter_shape[1:3])
-    input_tensor(interpreter)[:,:] = np.reshape(data, interpreter_shape[1:])
+      reshaped_data = np.reshape(data, interpreter_shape[1:])
+      input_tensor(interpreter)[:,:] = reshaped_data
 
 
 def make_interpreter(model_file):

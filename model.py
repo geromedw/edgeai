@@ -257,7 +257,7 @@ def classify_audio(audio_device_index, interpreter, labels_file,
                    commands_file=None,
                    result_callback=None, dectection_callback=None,
                    sample_rate_hz=16000,
-                   negative_threshold=0.6, num_frames_hop=33):
+                   negative_threshold=0.6, num_frames_hop=62):
   """Acquire audio, preprocess, and classify."""
   # Initialize recorder.
   AUDIO_SAMPLE_RATE_HZ = sample_rate_hz

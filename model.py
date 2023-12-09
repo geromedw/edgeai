@@ -53,7 +53,7 @@ class Uint8LogMelFeatureExtractor(object):
   a specified number of spectral slices from an AudioRecorder.
   """
 
-  def __init__(self, input_shape=(198, 32), num_frames_hop=99):
+  def __init__(self, input_shape=(124, 129), num_frames_hop=62):
     self.spectrogram_window_length_seconds = 0.025
     self.spectrogram_hop_length_seconds = 0.010
     
@@ -217,7 +217,7 @@ def set_input(interpreter, data):
         print("Error: Size mismatch between data array and target shape.")
     else:
       reshaped_data = np.reshape(data, interpreter_shape)
-      input_tensor(interpreter)[:, :, :, :] = reshaped_data 
+      input_tensor(interpreter)[:] = reshaped_data 
 
 
 def make_interpreter(model_file):
@@ -239,7 +239,7 @@ def add_model_flags(parser):
                       help="Optional: Input source microphone ID.")
   parser.add_argument(
       "--num_frames_hop",
-      default=99,
+      default=62,
       help="Optional: Number of frames to wait between model inference "
       "calls. Smaller numbers will reduce the latancy while increasing "
       "compute cost. Must devide 198. Defaults to 33.")
@@ -254,7 +254,7 @@ def classify_audio(audio_device_index, interpreter, labels_file,
                    commands_file=None,
                    result_callback=None, dectection_callback=None,
                    sample_rate_hz=16000,
-                   negative_threshold=0.6, num_frames_hop=99):
+                   negative_threshold=0.6, num_frames_hop=62):
   """Acquire audio, preprocess, and classify."""
   # Initialize recorder.
   AUDIO_SAMPLE_RATE_HZ = sample_rate_hz
@@ -280,7 +280,7 @@ def classify_audio(audio_device_index, interpreter, labels_file,
     last_detection = -1
     while not timed_out:
       spectrogram = feature_extractor.get_next_spectrogram(recorder)
-      spectrogram = spectrogram.reshape((198, 32))
+      spectrogram = spectrogram.reshape((124, 129, 1))
       set_input(interpreter, spectrogram.flatten())
       interpreter.invoke()
       result = get_output(interpreter)

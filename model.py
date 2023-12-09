@@ -53,7 +53,7 @@ class Uint8LogMelFeatureExtractor(object):
   a specified number of spectral slices from an AudioRecorder.
   """
 
-  def __init__(self, input_shape=(198, 32), num_frames_hop=98):
+  def __init__(self, input_shape=(198, 32), num_frames_hop=99):
     self.spectrogram_window_length_seconds = 0.025
     self.spectrogram_hop_length_seconds = 0.010
     
@@ -239,7 +239,7 @@ def add_model_flags(parser):
                       help="Optional: Input source microphone ID.")
   parser.add_argument(
       "--num_frames_hop",
-      default=98,
+      default=99,
       help="Optional: Number of frames to wait between model inference "
       "calls. Smaller numbers will reduce the latancy while increasing "
       "compute cost. Must devide 198. Defaults to 33.")
@@ -254,7 +254,7 @@ def classify_audio(audio_device_index, interpreter, labels_file,
                    commands_file=None,
                    result_callback=None, dectection_callback=None,
                    sample_rate_hz=16000,
-                   negative_threshold=0.6, num_frames_hop=98):
+                   negative_threshold=0.6, num_frames_hop=99):
   """Acquire audio, preprocess, and classify."""
   # Initialize recorder.
   AUDIO_SAMPLE_RATE_HZ = sample_rate_hz

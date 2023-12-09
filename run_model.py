@@ -48,7 +48,8 @@ def main():
   parser = argparse.ArgumentParser()
   model.add_model_flags(parser)
   args = parser.parse_args()
-  interpreter = model.make_interpreter("model.tflite")
+  print(args.model_file)
+  interpreter = model.make_interpreter(args.model_file)
   interpreter.allocate_tensors()
   mic = args.mic if args.mic is None else int(args.mic)
   model.classify_audio(mic, interpreter,

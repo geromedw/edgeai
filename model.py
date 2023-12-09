@@ -53,12 +53,11 @@ class Uint8LogMelFeatureExtractor(object):
   a specified number of spectral slices from an AudioRecorder.
   """
 
-  def __init__(self, input_shape=(124, 129, 1), num_frames_hop=62):
+  def __init__(self, num_frames_hop=33):
     self.spectrogram_window_length_seconds = 0.025
     self.spectrogram_hop_length_seconds = 0.010
-    
-    self.num_mel_bins = input_shape[1]
-    self.frame_length_spectra = input_shape[0]
+    self.num_mel_bins = 32
+    self.frame_length_spectra = 198
     if self.frame_length_spectra % num_frames_hop:
         raise ValueError('Invalid num_frames_hop value (%d), '
                          'must devide %d' % (num_frames_hop,
@@ -149,14 +148,10 @@ class Uint8LogMelFeatureExtractor(object):
     logger.info("self._spectrogram shape %s", str(self._spectrogram.shape))
     spectrogram = self._spectrogram.copy()
     spectrogram -= np.mean(spectrogram, axis=0)
-    std_dev = np.std(spectrogram,axis=0)
-    if np.any(std_dev <= 1e-10):
-      spectrogram/= self._norm_factor
-    else:
-      if self._norm_factor:
-        spectrogram /= self._norm_factor * np.std(spectrogram, axis=0)
-    spectrogram += 1
-    spectrogram *= 127.5
+    if self._norm_factor:
+      spectrogram /= self._norm_factor * np.std(spectrogram, axis=0)
+      spectrogram += 1
+      spectrogram *= 127.5
     return np.maximum(0, np.minimum(255, spectrogram)).astype(np.uint8)
 
 
@@ -198,26 +193,13 @@ def output_tensor(interpreter, i):
 def input_tensor(interpreter):
     """Returns the input tensor view as numpy array."""
     tensor_index = interpreter.get_input_details()[0]['index']
-    print(tensor_index)
     return interpreter.tensor(tensor_index)()[0]
 
 
 def set_input(interpreter, data):
     """Copies data to input tensor."""
     interpreter_shape = interpreter.get_input_details()[0]['shape']
-    data_size = np.prod(data.shape)
-    target_shape_size = np.prod(interpreter_shape)
-
-    print("Size of Data Array:", data_size, "Shape:", data.shape)
-    print("Size of Target Shape:", target_shape_size, "Target Shape:", interpreter_shape)
-
-
-
-    if data_size != target_shape_size:
-        print("Error: Size mismatch between data array and target shape.")
-    else:
-      reshaped_data = np.reshape(data, interpreter_shape)
-      input_tensor(interpreter)[:] = reshaped_data 
+    input_tensor(interpreter)[:,:] = np.reshape(data, interpreter_shape[1:3])
 
 
 def make_interpreter(model_file):
@@ -234,12 +216,12 @@ def add_model_flags(parser):
   parser.add_argument(
       "--model_file",
       help="File path of TFlite model.",
-      default="model.tflite")
+      default="models/voice_commands_v0.7_edgetpu.tflite")
   parser.add_argument("--mic", default=None,
                       help="Optional: Input source microphone ID.")
   parser.add_argument(
       "--num_frames_hop",
-      default=62,
+      default=33,
       help="Optional: Number of frames to wait between model inference "
       "calls. Smaller numbers will reduce the latancy while increasing "
       "compute cost. Must devide 198. Defaults to 33.")
@@ -254,7 +236,7 @@ def classify_audio(audio_device_index, interpreter, labels_file,
                    commands_file=None,
                    result_callback=None, dectection_callback=None,
                    sample_rate_hz=16000,
-                   negative_threshold=0.6, num_frames_hop=62):
+                   negative_threshold=0.6, num_frames_hop=33):
   """Acquire audio, preprocess, and classify."""
   # Initialize recorder.
   AUDIO_SAMPLE_RATE_HZ = sample_rate_hz
@@ -280,7 +262,6 @@ def classify_audio(audio_device_index, interpreter, labels_file,
     last_detection = -1
     while not timed_out:
       spectrogram = feature_extractor.get_next_spectrogram(recorder)
-      spectrogram = spectrogram.reshape((124, 129, 1))
       set_input(interpreter, spectrogram.flatten())
       interpreter.invoke()
       result = get_output(interpreter)

@@ -50,7 +50,9 @@ def main():
   args = parser.parse_args()
   print(args.model_file)
   interpreter = model.make_interpreter(args.model_file)
+  print(interpreter)
   interpreter.allocate_tensors()
+  print(interpreter.allocate_tensors())
   mic = args.mic if args.mic is None else int(args.mic)
   model.classify_audio(mic, interpreter,
                        labels_file="ownlabels.raw.txt",

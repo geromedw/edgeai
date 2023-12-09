@@ -40,7 +40,7 @@ train_ds, val_ds = tf.keras.utils.audio_dataset_from_directory(
     batch_size=64,
     validation_split=0.2,
     seed=0,
-    output_sequence_length=6900,
+    output_sequence_length=1600,
     subset='both')
 
 label_names = np.array(train_ds.class_names)
@@ -118,10 +118,12 @@ def plot_spectrogram(spectrogram, ax):
     if len(spectrogram.shape) > 2:
         assert len(spectrogram.shape) == 3
         spectrogram = np.squeeze(spectrogram, axis=-1)
-        # Convert the frequencies to log scale and transpose, so that the time is
-        # represented on the x-axis (columns).
-        # Add an epsilon to avoid taking a log of zero.
+    
+    # Convert the frequencies to log scale and transpose, so that the time is
+    # represented on the x-axis (columns).
+    # Add an epsilon to avoid taking a log of zero.
     log_spec = np.log(spectrogram.T + np.finfo(float).eps)
+    
     height = log_spec.shape[0]
     width = log_spec.shape[1]
     X = np.linspace(0, np.size(spectrogram), num=width, dtype=int)

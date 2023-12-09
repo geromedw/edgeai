@@ -237,12 +237,12 @@ def add_model_flags(parser):
   parser.add_argument(
       "--model_file",
       help="File path of TFlite model.",
-      default="voice_commands_v0.7_edgetpu.tflite")
+      default="model.tflite")
   parser.add_argument("--mic", default=None,
                       help="Optional: Input source microphone ID.")
   parser.add_argument(
       "--num_frames_hop",
-      default=33,
+      default=62,
       help="Optional: Number of frames to wait between model inference "
       "calls. Smaller numbers will reduce the latancy while increasing "
       "compute cost. Must devide 198. Defaults to 33.")

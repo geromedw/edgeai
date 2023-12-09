@@ -53,7 +53,7 @@ class Uint8LogMelFeatureExtractor(object):
   a specified number of spectral slices from an AudioRecorder.
   """
 
-  def __init__(self, input_shape=(124, 129), num_frames_hop=62):
+  def __init__(self, input_shape=(124, 129, 1), num_frames_hop=62):
     self.spectrogram_window_length_seconds = 0.025
     self.spectrogram_hop_length_seconds = 0.010
     

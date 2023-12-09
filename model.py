@@ -53,11 +53,12 @@ class Uint8LogMelFeatureExtractor(object):
   a specified number of spectral slices from an AudioRecorder.
   """
 
-  def __init__(self, num_frames_hop=33):
+  def __init__(self, input_shape=(124, 129, 1), num_frames_hop=33):
     self.spectrogram_window_length_seconds = 0.025
     self.spectrogram_hop_length_seconds = 0.010
-    self.num_mel_bins = 32
-    self.frame_length_spectra = 198
+    
+    self.num_mel_bins = input_shape[1]
+    self.frame_length_spectra = input_shape[0]
     if self.frame_length_spectra % num_frames_hop:
         raise ValueError('Invalid num_frames_hop value (%d), '
                          'must devide %d' % (num_frames_hop,
@@ -207,16 +208,19 @@ def set_input(interpreter, data):
     data_size = np.prod(data.shape)
     target_shape_size = np.prod(interpreter_shape[1:])
 
+    interpreter_shape = interpreter.get_input_details()[0]['shape']
+    input_tensor(interpreter)[:, :, :] = np.reshape(data, interpreter_shape[1:])
+
     print("Size of Data Array:", data_size, "Shape:", data.shape)
     print("Size of Target Shape:", target_shape_size, "Target Shape:", interpreter_shape[1:])
-    input_tensor(interpreter)[:,:] = np.reshape(data, interpreter_shape[1:3])
+    input_tensor(interpreter)[:, :,:] = np.reshape(data, interpreter_shape[1:3])
 
 
 """     if data_size != target_shape_size:
         print("Error: Size mismatch between data array and target shape.")
     else:
       reshaped_data = np.reshape(data, interpreter_shape[1:])
-    input_tensor(interpreter)[:,:] = reshaped_data """
+      input_tensor(interpreter)[:,:] = reshaped_data """
 
 
 def make_interpreter(model_file):
@@ -279,6 +283,7 @@ def classify_audio(audio_device_index, interpreter, labels_file,
     last_detection = -1
     while not timed_out:
       spectrogram = feature_extractor.get_next_spectrogram(recorder)
+      spectrogram = spectrogram.reshape((124, 129, 1))
       set_input(interpreter, spectrogram.flatten())
       interpreter.invoke()
       result = get_output(interpreter)

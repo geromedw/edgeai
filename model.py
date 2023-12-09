@@ -209,7 +209,7 @@ def set_input(interpreter, data):
     target_shape_size = np.prod(interpreter_shape[1:])
 
     print("Size of Data Array:", data_size, "Shape:", data.shape)
-    print("Size of Target Shape:", target_shape_size, "Target Shape:", interpreter_shape[1:])
+    print("Size of Target Shape:", target_shape_size, "Target Shape:", interpreter_shape)
 
 
 

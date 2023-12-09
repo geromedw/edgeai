@@ -148,10 +148,14 @@ class Uint8LogMelFeatureExtractor(object):
     logger.info("self._spectrogram shape %s", str(self._spectrogram.shape))
     spectrogram = self._spectrogram.copy()
     spectrogram -= np.mean(spectrogram, axis=0)
-    if self._norm_factor:
-      spectrogram /= self._norm_factor * np.std(spectrogram, axis=0)
-      spectrogram += 1
-      spectrogram *= 127.5
+    std_dev = np.std(spectrogram,axis=0)
+    if np.any(std_dev <= 1e-10):
+      spectrogram/= self._norm_factor
+    else:
+      if self._norm_factor:
+        spectrogram /= self._norm_factor * np.std(spectrogram, axis=0)
+    spectrogram += 1
+    spectrogram *= 127.5
     return np.maximum(0, np.minimum(255, spectrogram)).astype(np.uint8)
 
 
@@ -193,12 +197,23 @@ def output_tensor(interpreter, i):
 def input_tensor(interpreter):
     """Returns the input tensor view as numpy array."""
     tensor_index = interpreter.get_input_details()[0]['index']
+    print(tensor_index)
     return interpreter.tensor(tensor_index)()[0]
 
 
 def set_input(interpreter, data):
     """Copies data to input tensor."""
     interpreter_shape = interpreter.get_input_details()[0]['shape']
+    data_size = np.prod(data.shape)
+    target_shape_size = np.prod(interpreter_shape[1:3])
+
+    print("Size of Data Array:", data_size)
+    print("Size of Target Shape:", target_shape_size)
+
+    if data_size != target_shape_size:
+        print("Error: Size mismatch between data array and target shape.")
+    else:
+      reshaped_data = np.reshape(data, interpreter_shape[1:3])
     input_tensor(interpreter)[:,:] = np.reshape(data, interpreter_shape[1:3])
 
 
@@ -216,7 +231,7 @@ def add_model_flags(parser):
   parser.add_argument(
       "--model_file",
       help="File path of TFlite model.",
-      default="models/voice_commands_v0.7_edgetpu.tflite")
+      default="model.tflite")
   parser.add_argument("--mic", default=None,
                       help="Optional: Input source microphone ID.")
   parser.add_argument(

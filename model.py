@@ -148,10 +148,14 @@ class Uint8LogMelFeatureExtractor(object):
     logger.info("self._spectrogram shape %s", str(self._spectrogram.shape))
     spectrogram = self._spectrogram.copy()
     spectrogram -= np.mean(spectrogram, axis=0)
-    if self._norm_factor:
-      spectrogram /= self._norm_factor * np.std(spectrogram, axis=0)
-      spectrogram += 1
-      spectrogram *= 127.5
+    std_dev = np.std(spectrogram,axis=0)
+    if np.any(std_dev <= 1e-10):
+      spectrogram/= self._norm_factor
+    else:
+      if self._norm_factor:
+        spectrogram /= self._norm_factor * np.std(spectrogram, axis=0)
+    spectrogram += 1
+    spectrogram *= 127.5
     return np.maximum(0, np.minimum(255, spectrogram)).astype(np.uint8)
 
 

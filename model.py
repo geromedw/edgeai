@@ -280,7 +280,7 @@ def classify_audio(audio_device_index, interpreter, labels_file,
     last_detection = -1
     while not timed_out:
       spectrogram = feature_extractor.get_next_spectrogram(recorder)
-      spectrogram = spectrogram.reshape((124, 129, 1))
+      spectrogram = spectrogram.reshape((198, 32))
       set_input(interpreter, spectrogram.flatten())
       interpreter.invoke()
       result = get_output(interpreter)

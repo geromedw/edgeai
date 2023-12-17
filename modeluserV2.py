@@ -25,7 +25,7 @@ def checkModel():
 
     x = 'test.wav'
     x = tf.io.read_file(str(x))
-    x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=44100)
+    x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=16000)
     x = tf.squeeze(x, axis=-1)
 
     x = get_spectrogram(x)
@@ -93,7 +93,7 @@ SHORT_NORMALIZE = (1.0/32768.0)
 chunk = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
-RATE = 44100
+RATE = 16000
 swidth = 2
 
 TIMEOUT_LENGTH = 2

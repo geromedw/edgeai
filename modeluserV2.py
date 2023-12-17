@@ -23,7 +23,7 @@ def checkModel():
 
 
 
-    x = 'test/test.wav'
+    x = pathlib.Path("test/")/'test.wav'
     x = tf.io.read_file(str(x))
     x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=16000)
     x = tf.squeeze(x, axis=-1)
@@ -93,7 +93,7 @@ SHORT_NORMALIZE = (1.0/32768.0)
 chunk = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
-RATE = 44100
+RATE = 16000
 swidth = 2
 
 TIMEOUT_LENGTH = 2
@@ -132,7 +132,7 @@ class Recorder:
 
         while current <= end:
 
-            data = self.stream.read(chunk)
+            data = self.stream.read(chunk, exception_on_overflow=False)
             if self.rms(data) >= Threshold: end = time.time() + TIMEOUT_LENGTH
 
             current = time.time()
@@ -148,7 +148,7 @@ class Recorder:
         wf.setnchannels(CHANNELS)
         wf.setsampwidth(self.p.get_sample_size(FORMAT))
         wf.setframerate(RATE)
-        wf.writeframes(b"".join(recording))
+        wf.writeframes(recording)
         wf.close()
         print('Written to file: {}'.format(filename))
         print('Returning to listening')

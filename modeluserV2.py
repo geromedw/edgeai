@@ -59,14 +59,13 @@ def checkModel():
             print(f"{x_labels[i]}: {max(prediction.numpy())}%")
 
 
-CHUNK = 1024
+""" CHUNK = 1024
 RATE = 16000
-LEN = 2
+LEN = 2 """
 
-p = pyaudio.PyAudio()
 
-stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, output=True, frames_per_buffer=CHUNK,input_device_index=0)
-player = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK)
+""" stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, output=True, frames_per_buffer=CHUNK,input_device_index=0)
+player = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK) """
 
 
 """ try:

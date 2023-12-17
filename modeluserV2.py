@@ -121,7 +121,7 @@ class Recorder:
                                   rate=RATE,
                                   input=True,
                                   output=True,
-                                  frames_per_buffer=chunk)
+                                  frames_per_buffer=chunk, input_device_index=0)
 
     def record(self):
         print('Noise detected, recording beginning')

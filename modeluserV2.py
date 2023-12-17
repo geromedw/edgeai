@@ -22,7 +22,7 @@ def checkModel(data):
     waveform.close()
 
     x = 'test.wav'
-    x = tf.compat.v1.read_file(str(x))
+    x = tf.io.read_file(str(x))
     x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=16000)
     x = tf.squeeze(x, axis=-1)
 

@@ -57,7 +57,7 @@ LEN = 2
 
 p = pyaudio.PyAudio()
 
-stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frames_per_buffer=CHUNK,input_device_index=0)
+stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, output=True, frames_per_buffer=CHUNK,input_device_index=0)
 player = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK)
 
 

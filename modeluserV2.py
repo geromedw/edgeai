@@ -148,7 +148,7 @@ class Recorder:
         wf.setnchannels(CHANNELS)
         wf.setsampwidth(self.p.get_sample_size(FORMAT))
         wf.setframerate(RATE)
-        wf.writeframes(recording)
+        wf.writeframes(b"".join(recording))
         wf.close()
         print('Written to file: {}'.format(filename))
         print('Returning to listening')

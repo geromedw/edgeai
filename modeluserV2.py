@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+import tensorflow_io as io
 import pyaudio
 import wave
 import pathlib
@@ -34,7 +35,7 @@ def checkModel(data):
     waveform.close()
 
     x = 'test.wav'
-    x = tf.io.read_file(str(x))
+    x = io.read_file(str(x))
     x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=16000)
     x = tf.squeeze(x, axis=-1)
 

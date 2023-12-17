@@ -93,7 +93,7 @@ SHORT_NORMALIZE = (1.0/32768.0)
 chunk = 2**9
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
-RATE = 48000
+RATE = 16000
 swidth = 2
 
 TIMEOUT_LENGTH = 2

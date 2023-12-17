@@ -21,7 +21,7 @@ def checkModel(data):
     waveform.setframerate(16000)
     waveform.writeframes(b''.join(data))
     waveform.close()
-    
+
     x = 'test.wav'
     x = tf.io.read_file(str(x))
     x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=16000)
@@ -64,7 +64,7 @@ LEN = 2
 
 p = pyaudio.PyAudio()
 
-stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, output=True, frames_per_buffer=CHUNK,input_device_index=0)
+stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, output=True, frames_per_buffer=CHUNK,input_device_index=1)
 player = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK)
 
 

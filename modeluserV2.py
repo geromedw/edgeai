@@ -57,7 +57,7 @@ def checkModel(data):
             print(f"{x_labels[i]}: {max(prediction.numpy())}%")
 
 
-CHUNK = 2 ** 5
+CHUNK = 1024
 RATE = 16000
 LEN = 2
 

@@ -52,7 +52,7 @@ def checkModel(data):
 
 
 CHUNK = 1024
-RATE = 48000
+RATE = 16000
 LEN = 2
 
 p = pyaudio.PyAudio()

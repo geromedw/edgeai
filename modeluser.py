@@ -50,7 +50,7 @@ print(output_data)
 
 
 def checkModel(data):
-    waveform = wave.open(f'test.wav', 'w')
+    waveform = wave.open('test.wav', 'w')
     waveform.setnchannels(1)
     waveform.setsampwidth(pyaudio.get_sample_size(pyaudio.paInt16))
     waveform.setframerate(16000)

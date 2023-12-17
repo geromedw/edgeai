@@ -4,19 +4,6 @@ import pyaudio
 import wave
 import pathlib
 
-CHUNK = 2 ** 5
-RATE = 16000
-LEN = 2
-
-p = pyaudio.PyAudio()
-
-stream = p.open(
-    format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frames_per_buffer=CHUNK
-)
-player = p.open(
-    format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK
-)
-
 
 def get_spectrogram(waveform):
   spectrogram = tf.signal.stft(waveform, frame_length=255, frame_step=128)
@@ -67,6 +54,20 @@ def checkModel(data):
         if prediction[i].numpy() == max(prediction.numpy()):
             print("gevonden")
             print(f"{x_labels[i]}: {max(prediction.numpy())}%")
+
+
+CHUNK = 2 ** 5
+RATE = 16000
+LEN = 2
+
+p = pyaudio.PyAudio()
+
+stream = p.open(
+    format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frames_per_buffer=CHUNK
+)
+player = p.open(
+    format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK
+)
 
 
 try:

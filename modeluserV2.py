@@ -23,7 +23,7 @@ def checkModel():
 
 
 
-    x = 'test.wav'
+    x = 'test/test.wav'
     x = tf.io.read_file(str(x))
     x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=16000)
     x = tf.squeeze(x, axis=-1)

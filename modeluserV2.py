@@ -157,7 +157,7 @@ class Recorder:
     def listen(self):
         print('Listening beginning')
         while True:
-            input = self.stream.read(chunk)
+            input = self.stream
             rms_val = self.rms(input)
             if rms_val > Threshold:
                 self.record()

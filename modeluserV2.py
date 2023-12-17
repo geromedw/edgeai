@@ -14,12 +14,6 @@ def get_spectrogram(waveform):
 
 
 def checkModel(data):
-    waveform = wave.open(f"test.wav", "w")
-    waveform.setnchannels(1)
-    waveform.setsampwidth(pyaudio.get_sample_size(pyaudio.paInt16))
-    waveform.setframerate(16000)
-    waveform.writeframes(b''.join(data))
-    waveform.close()
 
     x = 'test.wav'
     x = tf.io.read_file(str(x))

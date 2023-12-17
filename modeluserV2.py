@@ -78,7 +78,7 @@ try:
             test = stream.read(CHUNK)
             data = np.fromstring(test, dtype=np.int16)
             arrayFrames.append(test)
-            player.write(data, CHUNK)
+            #player.write(data, CHUNK)
         checkModel(arrayFrames)
         arrayFrames.clear()
 

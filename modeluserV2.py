@@ -90,7 +90,7 @@ except KeyboardInterrupt:
 Threshold = 20
 
 SHORT_NORMALIZE = (1.0/32768.0)
-chunk = 2**9
+chunk = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 48000
@@ -157,7 +157,7 @@ class Recorder:
     def listen(self):
         print('Listening beginning')
         while True:
-            input = self.stream
+            input = self.stream.read(chunk, exception_on_overflow = False)
             rms_val = self.rms(input)
             if rms_val > Threshold:
                 self.record()

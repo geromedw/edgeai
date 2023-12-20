@@ -1,42 +1,80 @@
 import pyaudio
-import pathlib
-import numpy as np
+import numbers as np
+
 import tensorflow as tf
 
-from keras import models
+#AUDIO
+CHUNK = 1024
+RATE = 16000
+LEN = 1
 
-import wave
+p = pyaudio.PyAudio()
 
-from functions import *
+stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frames_per_buffer=CHUNK)
+player = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK)
 
-import tflite_runtime.interpreter as tflite
+def get_audio():
+    try:
+        arrayFrames=[]
+        for i in range(int(LEN * RATE / CHUNK)):  # go for a LEN seconds
+            audio = stream.read(CHUNK)
+            player.write(audio, CHUNK)
 
-#imported = models.load_model("saved1.keras")
-interpreter = tflite.Interpreter("model.tflite")
-interpreter.allocate_tensors()
+            arrayFrames.append(np.frombuffer(audio, dtype=np.int16))
 
-def checkModel(data):
+        return np.concatenate(arrayFrames)
+    except pyaudio.paInputOverflowed:
+        print("overflow")
 
-    input_tensor_index = interpreter.get_input_details()[0]['index']
-    interpreter.tensor(input_tensor_index)()[0] = data
+#Audio conversion
+import numpy as np
 
-    interpreter.invoke()
+def stft(waveform, frame_length=255, frame_step=128):
+    window = np.hanning(frame_length)
+    num_frames = 1 + (len(waveform) - frame_length) // frame_step
+    frames = np.array([waveform[i * frame_step:i * frame_step + frame_length] * window for i in range(num_frames)])
+    stft_result = np.fft.fft(frames, axis=-1)
+    return np.abs(stft_result)
+
+# def get_spectrogram(waveform):
+#     # Zero-padding for an audio waveform with less than 16,000 samples.
+#     input_len = 16000
+#     waveform = waveform[:input_len]
+#     zero_padding = np.zeros(16000 - len(waveform), dtype=np.float32)
+#     # Concatenate the waveform with zero_padding, ensuring all audio clips are of the same length.
+#     equal_length = np.concatenate([waveform, zero_padding])
+
+#     # Convert the waveform to a spectrogram via STFT.
+#     spectrogram = stft(equal_length)
+
+#     # Add a `channels` dimension.
+#     spectrogram = spectrogram[..., np.newaxis]
     
-    output_tensor_index = interpreter.get_output_details()[0]['index']
-    output_data = interpreter.tensor(output_tensor_index)()[0]
-    print(output_data)
-    #prediction = interpreter(data)
-    # x_labels = ['boom', 'hond', 'kat', 'uitlaat', 'vrede', 'water']
-    # prediction = tf.nn.softmax(prediction[0])
+#     return spectrogram
 
-    # #print(prediction.numpy())
-    # for i in range(len(x_labels)):
-    #     if prediction[i].numpy() == max(prediction.numpy()):
-    #         print(f"{x_labels[i]}: {max(prediction.numpy())}%")
+def get_spectrogram(waveform):
+  spectrogram = tf.signal.stft(waveform, frame_length=255, frame_step=128)
+  spectrogram = tf.abs(spectrogram)
+  spectrogram = spectrogram[..., tf.newaxis]
 
-#
-while True:
-    audio = get_audio()
-    print(audio.size)
-    spectrogram = preprocess_audiobuffer(audio, (124,129,1))
-    checkModel(spectrogram)
+  return spectrogram
+
+def preprocess_audiobuffer(waveform, expected_shape):
+    """
+    waveform: ndarray of size (16000, )
+    
+    output: Spectrogram Tensor of size: (1, `height`, `width`, `channels`)
+    """
+    # Normalize from [-32768, 32767] to [-1, 1]
+    waveform = waveform / 32768.0
+
+    # Get the spectrogram.
+    spectrogram = get_spectrogram(waveform)
+
+    # Resize or pad the spectrogram to match the expected input shape
+    spectrogram = np.resize(spectrogram, expected_shape)
+
+    # Add one dimension to match the expected input shape.
+    spectrogram = np.expand_dims(spectrogram, 0)
+
+    return spectrogram

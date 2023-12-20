@@ -14,17 +14,15 @@ stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frame
 player = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK)
 
 def get_audio():
-    try:
-        arrayFrames=[]
-        for i in range(int(LEN * RATE / CHUNK)):  # go for a LEN seconds
-            audio = stream.read(CHUNK)
-            #player.write(audio, CHUNK)
+    arrayFrames=[]
+    for i in range(int(LEN * RATE / CHUNK)):  # go for a LEN seconds
+        audio = stream.read(CHUNK)
+        #player.write(audio, CHUNK)
 
-            arrayFrames.append(np.frombuffer(audio, dtype=np.int16))
+        arrayFrames.append(np.frombuffer(audio, dtype=np.int16))
 
-        return np.concatenate(arrayFrames)
-    except:
-        print("overflow")
+    return np.concatenate(arrayFrames)
+
 
 #Audio conversion
 import numpy as np

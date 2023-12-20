@@ -18,7 +18,7 @@ def get_audio():
         arrayFrames=[]
         for i in range(int(LEN * RATE / CHUNK)):  # go for a LEN seconds
             audio = stream.read(CHUNK)
-            player.write(audio, CHUNK)
+            #player.write(audio, CHUNK)
 
             arrayFrames.append(np.frombuffer(audio, dtype=np.int16))
 

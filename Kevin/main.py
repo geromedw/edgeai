@@ -2,20 +2,22 @@ import pyaudio
 import pathlib
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
+
 from keras import models
 
 import wave
 
 from functions import *
 
+import tflite_runtime.interpreter as tflite
 
-imported = models.load_model("saved1.keras")
-
+#imported = models.load_model("saved1.keras")
+interpreter = tflite.Interpreter("model.tflite")
+interpreter.allocate_tensors()
 
 def checkModel(data):
 
-    prediction = imported(data)
+    prediction = interpreter(data)
     x_labels = ['boom', 'hond', 'kat', 'uitlaat', 'vrede', 'water']
     prediction = tf.nn.softmax(prediction[0])
 

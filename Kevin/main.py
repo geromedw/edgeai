@@ -42,5 +42,5 @@ def checkModel(data):
 while True:
     audio = get_audio()
     print(audio.size)
-    spectrogram = preprocess_audiobuffer(audio, (124,129,1))
-    checkModel(spectrogram)
+    #spectrogram = preprocess_audiobuffer(audio, (124,129,1))
+    #checkModel(spectrogram)

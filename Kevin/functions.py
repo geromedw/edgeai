@@ -23,7 +23,7 @@ def get_audio():
             arrayFrames.append(np.frombuffer(audio, dtype=np.int16))
 
         return np.concatenate(arrayFrames)
-    except pyaudio.paInputOverflowed:
+    except pyaudio.InputOverflowed:
         print("overflow")
 
 #Audio conversion

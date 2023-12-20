@@ -20,11 +20,10 @@ def get_audio():
         #player.write(audio, CHUNK)
 
         arrayFrames.append(np.frombuffer(audio, dtype=np.int16))
+
     stream.stop_stream()
     stream.close()
-    p.terminate()
     return np.concatenate(arrayFrames)
-
 
 
 #Audio conversion

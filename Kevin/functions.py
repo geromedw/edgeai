@@ -10,18 +10,21 @@ LEN = 1
 
 p = pyaudio.PyAudio()
 
-stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frames_per_buffer=CHUNK)
 player = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK)
 
 def get_audio():
+    stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frames_per_buffer=CHUNK)
     arrayFrames=[]
     for i in range(int(LEN * RATE / CHUNK)):  # go for a LEN seconds
         audio = stream.read(CHUNK)
         #player.write(audio, CHUNK)
 
         arrayFrames.append(np.frombuffer(audio, dtype=np.int16))
-
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
     return np.concatenate(arrayFrames)
+
 
 
 #Audio conversion

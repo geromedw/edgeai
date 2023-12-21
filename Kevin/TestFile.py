@@ -2,7 +2,7 @@ import pyaudio
 import pathlib
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
+
 from keras import models
 
 import wave
@@ -15,7 +15,7 @@ def get_spectrogram(waveform):
   return spectrogram
 
 #MODEL
-imported = models.load_model("EDGEAI/saved.keras")
+imported = models.load_model("saved.keras")
 #imported.summary()
 
 def checkModel(data):

@@ -90,7 +90,7 @@ except KeyboardInterrupt:
 Threshold = 20
 
 SHORT_NORMALIZE = (1.0/32768.0)
-chunk = 256
+chunk = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100

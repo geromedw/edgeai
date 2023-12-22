@@ -36,21 +36,20 @@ def checkModel(data):
     x = get_spectrogram(x)
     x = x[tf.newaxis,...]
 
-    input_tensor_index = interpreter.get_input_details()[0]['index']
-    interpreter.tensor(input_tensor_index)()[0] = x
-
+    input_details = interpreter.get_input_details()
+    interpreter.set_tensor(input_details[0]["index"], x)
     interpreter.invoke()
+
+    output_details = interpreter.get_output_details()
+    output_data = interpreter.get_tensor(output_details[0]["index"])
+
+    print(output_data[0])
     
-    output_tensor_index = interpreter.get_output_details()[0]['index']
-    output_data = interpreter.tensor(output_tensor_index)()[0]
-    
-    print(output_data)
-    
-    #prediction = interpreter(data)
     x_labels = ['boom', 'deur', 'hond', 'tafel', 'vrede', 'water']
 
-    print(x_labels[np.argmax(output_data)])
-
+    index = np.argmax(output_data[0])
+    confidense = int(tf.nn.softmax(output_data[0])[index].numpy() * 100)
+    print(f"{x_labels[index]}: {confidense}")
 
 #AUDIO
 CHUNK = 1024
@@ -66,7 +65,7 @@ try:
     while True:
         arrayFrames=[]
         for i in range(int(LEN * RATE / CHUNK)):  # go for a LEN seconds
-            audio = stream.read(CHUNK)
+            audio = stream.read(CHUNK, exception_on_overflow=False)
             #data = np.fromstring(audio, dtype=np.int16)
             arrayFrames.append(audio)
             #player.write(data, CHUNK)

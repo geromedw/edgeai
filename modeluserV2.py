@@ -25,7 +25,7 @@ def checkModel():
 
     x = pathlib.Path("test/")/'test.wav'
     x = tf.io.read_file(str(x))
-    x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=16000)
+    x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=44100)
     x = tf.squeeze(x, axis=-1)
 
     x = get_spectrogram(x)
@@ -49,7 +49,7 @@ def checkModel():
     output_data = interpreter.get_tensor(output_details[0]['index'])
     print(output_data)
 
-    x_labels = ['boom', 'hond', 'kat', 'uitlaat', 'vrede', 'water']
+    x_labels = ['boom', 'deur', 'hond', 'tafel', 'vrede', 'water']
     prediction = tf.nn.softmax(output_data[0])
 
     print(max(prediction.numpy()))
@@ -60,7 +60,7 @@ def checkModel():
 
 
 """ CHUNK = 1024
-RATE = 16000
+RATE = 44100
 LEN = 2 """
 
 
@@ -90,10 +90,10 @@ except KeyboardInterrupt:
 Threshold = 20
 
 SHORT_NORMALIZE = (1.0/32768.0)
-chunk = 256
+chunk = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
-RATE = 16000
+RATE = 44100
 swidth = 2
 
 TIMEOUT_LENGTH = 2

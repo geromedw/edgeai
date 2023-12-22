@@ -49,7 +49,7 @@ def checkModel():
     output_data = interpreter.get_tensor(output_details[0]['index'])
     print(output_data)
 
-    x_labels = ['boom', 'hond', 'kat', 'uitlaat', 'vrede', 'water']
+    x_labels = ['boom', 'deur', 'hond', 'tafel', 'vrede', 'water']
     prediction = tf.nn.softmax(output_data[0])
 
     print(max(prediction.numpy()))

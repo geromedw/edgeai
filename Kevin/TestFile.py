@@ -2,7 +2,7 @@ import pyaudio
 import pathlib
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
+
 from keras import models
 
 import wave
@@ -50,20 +50,16 @@ LEN = 1
 
 p = pyaudio.PyAudio()
 
-stream = p.open(
-    format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frames_per_buffer=CHUNK
-)
-player = p.open(
-    format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK
-)
+stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frames_per_buffer=CHUNK)
+#player = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK)
 
 try:
     while True:
         arrayFrames=[]
         for i in range(int(LEN * RATE / CHUNK)):  # go for a LEN seconds
-            test = stream.read(CHUNK)
-            data = np.fromstring(test, dtype=np.int16)
-            arrayFrames.append(test)
+            audio = stream.read(CHUNK)
+            #data = np.fromstring(audio, dtype=np.int16)
+            arrayFrames.append(audio)
             #player.write(data, CHUNK)
         checkModel(arrayFrames)
         arrayFrames.clear()

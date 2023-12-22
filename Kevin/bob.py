@@ -16,21 +16,14 @@ def get_spectrogram(waveform):
 
 #MODEL
 
-interpreter = tf.lite.Interpreter("model.tflite")
+interpreter = tf.lite.Interpreter("EDGEAI/model.tflite")
 interpreter.allocate_tensors()
 #imported.summary()
 
-def checkModel(data):
-    waveform = wave.open(f"test/test.wav", "w")
-    waveform.setnchannels(1)
-    waveform.setsampwidth(pyaudio.get_sample_size(pyaudio.paInt16))
-    waveform.setframerate(48000)
-    waveform.writeframes(b''.join(data))
-    waveform.close()
-
+def checkModel():
     x = pathlib.Path("test/")/'test.wav'
     x = tf.io.read_file(str(x))
-    x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=48000)
+    x, sample_rate = tf.audio.decode_wav(x, desired_channels=1, desired_samples=16000)
     x = tf.squeeze(x, axis=-1)
 
     x = get_spectrogram(x)
@@ -69,7 +62,15 @@ try:
             #data = np.fromstring(audio, dtype=np.int16)
             arrayFrames.append(audio)
             #player.write(data, CHUNK)
-        checkModel(arrayFrames)
+        wf = wave.open("test/test.wav", "wb")
+        wf.setnchannels(1)
+        wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
+        wf.setframerate(16000)
+        wf.writeframes(b"".join(arrayFrames))
+        wf.close()
+
+        checkModel()
+
         arrayFrames.clear()
 
 except KeyboardInterrupt:

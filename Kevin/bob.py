@@ -66,7 +66,7 @@ try:
             #player.write(data, CHUNK)
         wf = wave.open("test/test.wav", "wb")
         wf.setnchannels(1)
-        wf.setsampwidth(p.get_sample_size(pyaudio.paInt44))
+        wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
         wf.setframerate(44100)
         wf.writeframes(b"".join(arrayFrames))
         wf.close()

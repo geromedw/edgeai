@@ -55,7 +55,7 @@ def checkModel():
     print(max(prediction.numpy()))
     for i in range(len(x_labels)):
         if prediction[i].numpy() == max(prediction.numpy()):
-            print("gevondeen")
+            print("gevonden")
             print(f"{x_labels[i]}: {max(prediction.numpy())}%")
 
 

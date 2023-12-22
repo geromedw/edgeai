@@ -1,5 +1,5 @@
 import pyaudio
-import numbers as np
+
 
 import tensorflow as tf
 
@@ -9,7 +9,7 @@ RATE = 16000
 LEN = 1
 
 p = pyaudio.PyAudio()
-stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frames_per_buffer=CHUNK)
+stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frames_per_buffer=CHUNK, input_device_index=0)
 #player = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK)
 
 def get_audio():
@@ -22,32 +22,8 @@ def get_audio():
 
     return np.concatenate(arrayFrames)
 
-
 #Audio conversion
 import numpy as np
-
-def stft(waveform, frame_length=255, frame_step=128):
-    window = np.hanning(frame_length)
-    num_frames = 1 + (len(waveform) - frame_length) // frame_step
-    frames = np.array([waveform[i * frame_step:i * frame_step + frame_length] * window for i in range(num_frames)])
-    stft_result = np.fft.fft(frames, axis=-1)
-    return np.abs(stft_result)
-
-# def get_spectrogram(waveform):
-#     # Zero-padding for an audio waveform with less than 16,000 samples.
-#     input_len = 16000
-#     waveform = waveform[:input_len]
-#     zero_padding = np.zeros(16000 - len(waveform), dtype=np.float32)
-#     # Concatenate the waveform with zero_padding, ensuring all audio clips are of the same length.
-#     equal_length = np.concatenate([waveform, zero_padding])
-
-#     # Convert the waveform to a spectrogram via STFT.
-#     spectrogram = stft(equal_length)
-
-#     # Add a `channels` dimension.
-#     spectrogram = spectrogram[..., np.newaxis]
-    
-#     return spectrogram
 
 def get_spectrogram(waveform):
   spectrogram = tf.signal.stft(waveform, frame_length=255, frame_step=128)

@@ -13,7 +13,7 @@ CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-THRESHOLD = 5000
+THRESHOLD = 2500
 
 p = pyaudio.PyAudio()
 interpreter = Interpreter("model.tflite")

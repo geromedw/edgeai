@@ -3,6 +3,7 @@ import pathlib
 import numpy as np
 
 import tensorflow as tf
+from tflite_runtime.interpreter import Interpreter
 
 import wave
 
@@ -24,7 +25,7 @@ def get_spectrogram(waveform):
   return spectrogram
 
 #MODEL
-interpreter = tf.lite.Interpreter("model.tflite")
+interpreter = Interpreter("model.tflite")
 interpreter.allocate_tensors()
 #imported.summary()
 

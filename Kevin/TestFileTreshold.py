@@ -13,6 +13,7 @@ import wave
 import time
 import os
 
+import GPIO
 
 #FUNCTIES
 def get_spectrogram(waveform):
@@ -23,7 +24,7 @@ def get_spectrogram(waveform):
   return spectrogram
 
 #MODEL
-interpreter = tf.lite.Interpreter("EDGEAI/model.tflite")
+interpreter = tf.lite.Interpreter("model.tflite")
 interpreter.allocate_tensors()
 #imported.summary()
 
@@ -52,7 +53,10 @@ def checkModel():
     index = np.argmax(output_data[0])
     confidense = int(tf.nn.softmax(output_data[0])[index].numpy() * 100)
     print(f"{x_labels[index]}: {confidense}")
-    
+
+    if confidense > 90:
+        GPIO.changeLed(x_labels[index])
+
 #AUDIO
 
 Threshold = 20
@@ -99,7 +103,7 @@ class Recorder:
 
         while current <= end:
 
-            data = self.stream.read(chunk)
+            data = self.stream.read(chunk, exception_on_overflow=False)
             if self.rms(data) >= Threshold: end = time.time() + TIMEOUT_LENGTH
 
             current = time.time()
@@ -124,7 +128,7 @@ class Recorder:
     def listen(self):
         print('Listening beginning')
         while True:
-            input = self.stream.read(chunk)
+            input = self.stream.read(chunk,exception_on_overflow=False)
             rms_val = self.rms(input)
             if rms_val > Threshold:
                 self.record()

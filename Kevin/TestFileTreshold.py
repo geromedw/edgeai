@@ -1,10 +1,8 @@
 import pyaudio
 import pathlib
 import numpy as np
-import matplotlib.pyplot as plt
 
 import tensorflow as tf
-from keras import models
 
 import wave
 
@@ -25,17 +23,11 @@ def get_spectrogram(waveform):
   return spectrogram
 
 #MODEL
-imported = models.load_model("EDGEAI/saved.keras")
+interpreter = tf.lite.Interpreter("EDGEAI/model.tflite")
+interpreter.allocate_tensors()
 #imported.summary()
 
-def checkModel(data=None):
-    # waveform = wave.open(f"test/test.wav", "w")
-    # waveform.setnchannels(1)
-    # waveform.setsampwidth(pyaudio.get_sample_size(pyaudio.paInt16))
-    # waveform.setframerate(16000)
-    # waveform.writeframes(b''.join(data))
-    # waveform.close()
-
+def checkModel():
     x = pathlib.Path("test/")/'test.wav'
     x = tf.io.read_file(str(x))
 
@@ -46,15 +38,21 @@ def checkModel(data=None):
     x = get_spectrogram(x)
     x = x[tf.newaxis,...]
 
-    prediction = imported(x)
+    input_details = interpreter.get_input_details()
+    interpreter.set_tensor(input_details[0]["index"], x)
+    interpreter.invoke()
+
+    output_details = interpreter.get_output_details()
+    output_data = interpreter.get_tensor(output_details[0]["index"])
+
+    print(output_data[0])
+    
     x_labels = ['boom', 'deur', 'hond', 'tafel', 'vrede', 'water']
-    prediction = tf.nn.softmax(prediction[0])
 
-    #print(prediction.numpy())
-    for i in range(len(x_labels)):
-        if prediction[i].numpy() == max(prediction.numpy()):
-            print(f"{x_labels[i]}: {max(prediction.numpy())}%")
-
+    index = np.argmax(output_data[0])
+    confidense = int(tf.nn.softmax(output_data[0])[index].numpy() * 100)
+    print(f"{x_labels[index]}: {confidense}")
+    
 #AUDIO
 
 Threshold = 20

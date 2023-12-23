@@ -6,11 +6,14 @@ green = GPIO("/dev/gpiochip4", 10, "out") #pin 18
 
 def changeLed(word):
     if word == "boom":
-        print("boom")
-        print("LED1")
         red.write(True)
-        print()
-    elif word == "hond":
-        print("kat")
+    elif word == "deur":
         red.write(False)
-        print()
+    elif word == "hond":
+        yellow.write(True)
+    elif word == "tafel":
+        yellow.write(False)
+    elif word == "vrede":
+        green.write(True)
+    elif word == "water":
+        green.write(False)

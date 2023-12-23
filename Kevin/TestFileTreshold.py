@@ -16,7 +16,7 @@ RATE = 44100
 THRESHOLD = 2500
 
 p = pyaudio.PyAudio()
-interpreter = tf.lite.Interpreter("EDGEAI/model.tflite")
+interpreter = tf.lite.Interpreter("model.tflite")
 interpreter.allocate_tensors()
 
 stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)

@@ -1,33 +1,59 @@
 import pyaudio
-import pathlib
 import numpy as np
-
-import tensorflow as tf
-from tflite_runtime.interpreter import Interpreter
-
 import wave
-
-import pyaudio
-import math
-import struct
-import wave
-import time
-import os
 
 import GPIO
 
-#FUNCTIES
+import tensorflow as tf
+from tflite_runtime.interpreter import Interpreter
+import pathlib
+
+# PyAudio configuration
+CHUNK = 1024
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 44100
+THRESHOLD = 1000
+
+p = pyaudio.PyAudio()
+interpreter = Interpreter("model.tflite")
+interpreter.allocate_tensors()
+
+stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
+
+def wait_for_audio():
+    print("Listening...")
+    while True:
+        audio_data = np.frombuffer(stream.read(CHUNK), dtype=np.int16)
+        energy = np.sum(np.abs(audio_data) ** 2) / len(audio_data)
+        print(energy)
+        if energy > THRESHOLD:
+            print("Voice activated! Recording...")
+            break
+
+def record_audio():
+    print("Recording")
+    audioFrames=[]
+    for i in range(int(1 * RATE / CHUNK)):  # go for a LEN seconds
+        audio = stream.read(CHUNK)
+        audioFrames.append(audio)
+        #audioFrames.append(np.frombuffer(audio, dtype=np.int16))
+
+    waveform = wave.open(f"test/test.wav", "w")
+    waveform.setnchannels(1)
+    waveform.setsampwidth(pyaudio.get_sample_size(pyaudio.paInt16))
+    waveform.setframerate(44100)
+    waveform.writeframes(b''.join(audioFrames))
+    waveform.close()
+
+    #return np.concatenate(audioFrames)
+
 def get_spectrogram(waveform):
   spectrogram = tf.signal.stft(waveform, frame_length=255, frame_step=128)
   spectrogram = tf.abs(spectrogram)
   spectrogram = spectrogram[..., tf.newaxis]
 
   return spectrogram
-
-#MODEL
-interpreter = Interpreter("model.tflite")
-interpreter.allocate_tensors()
-#imported.summary()
 
 def checkModel():
     x = pathlib.Path("test/")/'test.wav'
@@ -58,82 +84,13 @@ def checkModel():
     if confidense > 90:
         GPIO.changeLed(x_labels[index])
 
-#AUDIO
-
-Threshold = 20
-
-SHORT_NORMALIZE = (1.0/32768.0)
-chunk = 1024
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
-swidth = 2
-
-TIMEOUT_LENGTH = 2
-
-class Recorder:
-
-    @staticmethod
-    def rms(frame):
-        count = len(frame) / swidth
-        format = "%dh" % (count)
-        shorts = struct.unpack(format, frame)
-
-        sum_squares = 0.0
-        for sample in shorts:
-            n = sample * SHORT_NORMALIZE
-            sum_squares += n * n
-        rms = math.pow(sum_squares / count, 0.5)
-
-        return rms * 1000
-
-    def __init__(self):
-        self.p = pyaudio.PyAudio()
-        self.stream = self.p.open(format=FORMAT,
-                                  channels=CHANNELS,
-                                  rate=RATE,
-                                  input=True,
-                                  output=True,
-                                  frames_per_buffer=chunk)
-
-    def record(self):
-        print('Noise detected, recording beginning')
-        rec = []
-        current = time.time()
-        end = time.time() + TIMEOUT_LENGTH
-
-        while current <= end:
-
-            data = self.stream.read(chunk, exception_on_overflow=False)
-            if self.rms(data) >= Threshold: end = time.time() + TIMEOUT_LENGTH
-
-            current = time.time()
-            rec.append(data)
-        self.write(b''.join(rec))
-
-    def write(self, recording):
-        n_files = len(os.listdir("test"))
-
-        filename = os.path.join("test", 'test.wav'.format(n_files))
-
-        wf = wave.open(filename, 'wb')
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(self.p.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(recording)
-        wf.close()
-        print('Written to file: {}'.format(filename))
-        print('Returning to listening')
+while True:
+    try:
+        wait_for_audio()    #Waits until threshold
+        record_audio() #record to test.wav
         checkModel()
 
-    def listen(self):
-        print('Listening beginning')
-        while True:
-            input = self.stream.read(chunk,exception_on_overflow=False)
-            rms_val = self.rms(input)
-            if rms_val > Threshold:
-                self.record()
-
-a = Recorder()
-
-a.listen()
+    except KeyboardInterrupt:
+        stream.stop_stream()
+        stream.close()
+        p.terminate()

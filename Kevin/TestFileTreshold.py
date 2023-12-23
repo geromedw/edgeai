@@ -13,7 +13,7 @@ CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-THRESHOLD = 1000
+THRESHOLD = 5000
 
 p = pyaudio.PyAudio()
 interpreter = Interpreter("model.tflite")
@@ -26,8 +26,8 @@ def wait_for_audio():
     while True:
         audio_data = np.frombuffer(stream.read(CHUNK, exception_on_overflow=False), dtype=np.int16)
         energy = np.sum(np.abs(audio_data) ** 2) / len(audio_data)
-        print(energy)
         if energy > THRESHOLD:
+            print(energy)
             print("Voice activated! Recording...")
             break
 
@@ -87,8 +87,8 @@ def checkModel():
 while True:
     try:
         wait_for_audio()    #Waits until threshold
-        record_audio() #record to test.wav
-        checkModel()
+        #record_audio()  #record to test.wav
+        #checkModel()    #Verify input
 
     except KeyboardInterrupt:
         stream.stop_stream()

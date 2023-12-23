@@ -27,7 +27,6 @@ def wait_for_audio():
         audio_data = np.frombuffer(stream.read(CHUNK, exception_on_overflow=False), dtype=np.int16)
         energy = np.sum(np.abs(audio_data) ** 2) / len(audio_data)
         if energy > THRESHOLD:
-            print(energy)
             print("Voice activated! Recording...")
             break
 
@@ -87,8 +86,8 @@ def checkModel():
 while True:
     try:
         wait_for_audio()    #Waits until threshold
-        #record_audio()  #record to test.wav
-        #checkModel()    #Verify input
+        record_audio()  #record to test.wav
+        checkModel()    #Verify input
 
     except KeyboardInterrupt:
         stream.stop_stream()

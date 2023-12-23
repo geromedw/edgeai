@@ -65,12 +65,11 @@ def checkModel():
     x = get_spectrogram(x)
     x = x[tf.newaxis,...]
 
-    input_details = interpreter.get_input_details()
-    interpreter.set_tensor(input_details[0]["index"], x)
+    interpreter.set_tensor(interpreter.get_input_details()[0]["index"], x)
+
     interpreter.invoke()
 
-    output_details = interpreter.get_output_details()
-    output_data = interpreter.get_tensor(output_details[0]["index"])
+    output_data = interpreter.get_tensor(interpreter.get_output_details()[0]["index"])
 
     print(output_data[0])
     

@@ -24,7 +24,7 @@ stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_
 def wait_for_audio():
     print("Listening...")
     while True:
-        audio_data = np.frombuffer(stream.read(CHUNK), dtype=np.int16)
+        audio_data = np.frombuffer(stream.read(CHUNK, exception_on_overflow=False), dtype=np.int16)
         energy = np.sum(np.abs(audio_data) ** 2) / len(audio_data)
         print(energy)
         if energy > THRESHOLD:
@@ -35,7 +35,7 @@ def record_audio():
     print("Recording")
     audioFrames=[]
     for i in range(int(1 * RATE / CHUNK)):  # go for a LEN seconds
-        audio = stream.read(CHUNK)
+        audio = stream.read(CHUNK, exception_on_overflow=False)
         audioFrames.append(audio)
         #audioFrames.append(np.frombuffer(audio, dtype=np.int16))
 

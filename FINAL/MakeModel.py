@@ -217,6 +217,7 @@ if SHOW_PLOT:
               annot=True, fmt='g')
   plt.xlabel('Prediction')
   plt.ylabel('Label')
+  plt.show()
 
 #Show how well the model did on an example file
 if SHOW_PLOT:

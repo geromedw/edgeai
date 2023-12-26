@@ -75,7 +75,6 @@ def checkModel(audio):
     output_data = interpreter.get_tensor(interpreter.get_output_details()[0]["index"])[0]
 
     predictions = softmax(output_data)
-    print(predictions)
     
     x_labels = ['boom', 'deur', 'hond', 'tafel', 'vrede', 'water']
 
@@ -83,7 +82,7 @@ def checkModel(audio):
     confidense = int(predictions[index]*100)    #Convert to %
     print(f"{x_labels[index]}: {confidense}%")  #Print result
 
-    if confidense > 90:
+    if confidense > 80:
         GPIO.changeLed(x_labels[index])
 
 while True:

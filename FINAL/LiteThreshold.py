@@ -32,11 +32,11 @@ def wait_for_audio():
         energy = np.sum(np.abs(audio_data) ** 2) / len(audio_data)
         if energy > THRESHOLD:
             print("Geluid!, opnemen...")
-            return audio_data
+            break
 
 #Record the audio and store in array
-def record_audio(first_audio):
-    audioFrames=[first_audio]
+def record_audio():
+    audioFrames=[]
     for _ in range(int(1 * RATE / CHUNK)):  # go for a LEN seconds
         audio = stream.read(CHUNK, exception_on_overflow=False)
         audioFrames.append(np.frombuffer(audio, dtype=np.int16))
@@ -87,8 +87,8 @@ def checkModel(audio):
 
 while True:
     try:
-        first_audio = wait_for_audio()    #Waits until threshold
-        audio = record_audio(first_audio)  #record
+        wait_for_audio()    #Waits until threshold
+        audio = record_audio()  #record
         checkModel(audio)    #Verify input
 
     except KeyboardInterrupt:
